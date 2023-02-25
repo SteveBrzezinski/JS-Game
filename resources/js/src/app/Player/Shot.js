@@ -12,6 +12,8 @@ class Shot{
         this.delete = false;
         this.close = false;
 
+        this.killPlayer = false;
+
         this.speed = 6;
 
         this.h = 10;
@@ -51,7 +53,8 @@ class Shot{
             if(this.y !== 0){
                 this.y--;
             }else {
-                this.delete = true;
+                this.killPlayer = true;
+                this.y = canvas.CANVAS_HEIGHT - this.h;
             }
         }
 
@@ -59,7 +62,8 @@ class Shot{
             if(this.x !== 0){
                 this.x--;
             }else{
-                this.delete = true;
+                this.killPlayer = true;
+                this.x = canvas.CANVAS_WIDTH - this.w;
             }
         }
 
@@ -67,7 +71,8 @@ class Shot{
             if(this.y !== canvas.CANVAS_HEIGHT - this.h){
                 this.y++;
             }else{
-                this.delete = true;
+                this.killPlayer = true;
+                this.y = this.h;
             }
         }
 
@@ -75,7 +80,8 @@ class Shot{
             if(this.x !== canvas.CANVAS_WIDTH - this.w){
                 this.x++;
             }else{
-                this.delete = true;
+                this.killPlayer = true;
+                this.x = this.w;
             }
         }
     }

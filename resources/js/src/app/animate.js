@@ -25,7 +25,7 @@ function animate(){
     settings.animateSettings(player, target, enemies, points);
     target.animateTarget(player.x, player.y, points);
     enemies.animateEnemies(player.x, player.y, player.shots.shots, points);
-    player.animatePlayer();
+    player.animatePlayer(points);
     points.animatePoints();
     requestAnimationFrame(animate);
 }

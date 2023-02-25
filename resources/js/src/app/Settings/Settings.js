@@ -11,7 +11,7 @@ class Settings{
         }
     }
 
-    animateSettings(player, target, enemies, points){
+    animateSettings(player, target, enemies){
         this.player(player, target, enemies);
     }
 }

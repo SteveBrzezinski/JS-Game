@@ -27,6 +27,7 @@ class Player{
             'KeyD': false
         }
         this.shot = 0;
+        this.hitbox = (this.h / 2) + (this.w / 2);
     }
 
     // face show direction
@@ -94,7 +95,39 @@ class Player{
     }
 
     // draw player
-    draw(){
+    draw(points){
+
+        // do that for all shots of shots
+        for(let shot of shots.shots){
+
+            // set default values
+            let xDistanceShot = null;
+            let yDistanceShot = null;
+
+            if(shot.direction['KeyW'] === true || shot.direction['KeyA'] === true){
+                xDistanceShot = Math.abs(shot.x - this.x);
+                yDistanceShot = Math.abs(shot.y - this.y);
+            }else if (shot.direction['KeyS'] === true || shot.direction['KeyD'] === true){
+                xDistanceShot = Math.abs((shot.x - this.w + shot.w) - this.x);
+                yDistanceShot = Math.abs((shot.y - this.h + shot.h) - this.y);
+            }
+
+            // check if isset a values
+            if(xDistanceShot != null && yDistanceShot != null){
+
+                // calculate distance between shot and player
+                let distanceShot = Math.sqrt((xDistanceShot * xDistanceShot) + (yDistanceShot * yDistanceShot));
+
+                // do that if shot hit player
+                if (distanceShot < this.hitbox && shot.delete === false) {
+                    if(shot.killPlayer === true){
+                        shot.delete = true;
+                        points.player();
+                    }
+                }
+            }
+        }
+
         canvas.CONTEXT.fillStyle = "black";
         canvas.CONTEXT.fillRect(this.x, this.y, this.w, this.h);
     }
@@ -119,13 +152,13 @@ class Player{
     }
 
     // way it is carried out
-    animatePlayer(){
+    animatePlayer(points){
         this.shoot();
         this.shots.animateShots();
         for (let count = 0; count !== this.speed; count++){
             this.clear();
             this.move();
-            this.draw();
+            this.draw(points);
             this.faceDirection();
             this.face();
         }

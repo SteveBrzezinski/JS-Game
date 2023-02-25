@@ -1,5 +1,6 @@
 // imports
 import Canvas from "../Canvas";
+import shot from "@/src/app/Player/Shot";
 
 // Classes in variables
 let canvas = new Canvas();
@@ -12,7 +13,7 @@ class Enemy{
         this.delete = false;
         this.close = false;
 
-        this.speed = 2;
+        this.speed = 1;
 
         this.playerPositionX = playerPositionX;
         this.playerPositionY = playerPositionY;
@@ -35,10 +36,10 @@ class Enemy{
         let abs2 = Math.abs(this.playerPositionX - (canvas.CANVAS_WIDTH - this.w));
 
         if(abs1 >= abs2){
-            return 0;
+            return 50;
         }
 
-        return canvas.CANVAS_WIDTH - this.w;
+        return canvas.CANVAS_WIDTH - this.w - 50;
     }
 
     // set a new spawnY position for a new enemy
@@ -48,36 +49,32 @@ class Enemy{
         let abs2 = Math.abs(this.playerPositionY - (canvas.CANVAS_HEIGHT - this.h));
 
         if(abs1 >= abs2){
-            return 0;
+            return 50;
         }
 
-        return canvas.CANVAS_HEIGHT - this.h;
+        return canvas.CANVAS_HEIGHT - this.h - 50;
     }
 
-    // draw enemy
-    draw(playerPositionX, playerPositionY, shots, points){
-
-        // do that for all shots of shots
+    shotHitsEnemy(shots, points){
         for(let shot of shots){
-
             // Berechne den Abstand zwischen shot und gegner
             let xDistanceShot = Math.abs((shot.x - (this.w / 2)) - this.x);
             let yDistanceShot = Math.abs((shot.y - (this.h / 2)) - this.y);
             let distanceShot = Math.sqrt((xDistanceShot * xDistanceShot) + (yDistanceShot * yDistanceShot));
-
             // do that if shot hit enemy
             if (distanceShot < this.hitbox && shot.delete === false) {
-
                 shot.delete = true;
                 this.hp--;
-
                 if(this.hp === 0){
                     this.delete = true;
                     points.enemy();
                 }
             }
         }
+    }
 
+    moveEnemy(playerPositionX, playerPositionY, points)
+    {
         // Berechne den Abstand zwischen player und gegner
         let xDistance = Math.abs(playerPositionX - this.x);
         let yDistance = Math.abs(playerPositionY - this.y);
@@ -88,20 +85,77 @@ class Enemy{
             points.player();
         }
 
-        // run to player
-        if(playerPositionX < this.x){
-            this.x--;
-        }
-        if(playerPositionX > this.x){
-            this.x++;
-        }
-        if (playerPositionY < this.y) {
-            this.y--;
-        }
-        if (playerPositionY > this.y) {
-            this.y++;
+        if(xDistance <= (canvas.CANVAS_WIDTH / 2)){
+
+            // run to player
+            if(playerPositionX < this.x){
+                this.x--;
+            }
+            if(playerPositionX > this.x){
+                this.x++;
+            }
+
+            if(yDistance <= (canvas.CANVAS_HEIGHT / 2)){
+
+                if (playerPositionY < this.y) {
+                    this.y--;
+                }
+                if (playerPositionY > this.y) {
+                    this.y++;
+                }
+            }else{
+                if (playerPositionY < this.y) {
+                    this.y++;
+                }
+                if (playerPositionY > this.y) {
+                    this.y--;
+                }
+            }
+
+        }else{
+            // run to player
+            if(playerPositionX < this.x){
+                this.x++;
+            }
+            if(playerPositionX > this.x){
+                this.x--;
+            }
+            if(yDistance <= (canvas.CANVAS_HEIGHT / 2)){
+
+                if (playerPositionY < this.y) {
+                    this.y--;
+                }
+                if (playerPositionY > this.y) {
+                    this.y++;
+                }
+            }else{
+                if (playerPositionY < this.y) {
+                    this.y++;
+                }
+                if (playerPositionY > this.y) {
+                    this.y--;
+                }
+            }
+
         }
 
+
+        if(this.x === 0){
+            this.x = canvas.CANVAS_WIDTH - this.w - 1;
+        }
+        else if(this.x === canvas.CANVAS_WIDTH - this.w){
+            this.x = 1;
+        }
+        else if(this.y === 0){
+            this.y = canvas.CANVAS_HEIGHT - this.h - 1;
+        }
+        else if(this.y === canvas.CANVAS_HEIGHT - this.h){
+            this.y = 1;
+        }
+    }
+
+    // draw enemy
+    draw(){
         // set color and fill Rect
         canvas.CONTEXT.fillStyle = "red";
         canvas.CONTEXT.fillRect(this.x, this.y, this.w, this.h);
@@ -117,7 +171,9 @@ class Enemy{
         if(this.delete === false){
             for (let count = 0; count !== this.speed; count++){
                 this.clear();
-                this.draw(playerPositionX, playerPositionY, shots, points);
+                this.shotHitsEnemy(shots, points);
+                this.moveEnemy(playerPositionX, playerPositionY, points);
+                this.draw();
             }
         }
         else if(this.close === false){

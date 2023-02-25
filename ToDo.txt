@@ -1,0 +1,6 @@
+1. Schüsse sollen auf der anderen Seite wieder auftauchen. X
+2. Schüsse sollen einem selber auch schaden zufügen können.X
+3. Die Feinde sollen auch auf die andere seite springen können
+4. Die Feinde sollen sich nicht überlappen können
+5. Die Feinde sollen lernen können
+6.
